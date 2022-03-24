@@ -33,10 +33,7 @@ from enum import IntEnum, auto
 from pathlib import Path
 
 import htcondor
-from lsst.utils.timer import time_this
-from packaging import version
-
-from ... import (
+from lsst.ctrl.bps import (
     BaseWmsService,
     BaseWmsWorkflow,
     GenericWorkflow,
@@ -45,7 +42,10 @@ from ... import (
     WmsRunReport,
     WmsStates,
 )
-from ...bps_utils import chdir, create_count_summary
+from lsst.ctrl.bps.bps_utils import chdir, create_count_summary
+from lsst.utils.timer import time_this
+from packaging import version
+
 from .lssthtc import (
     MISSING_ID,
     HTCDag,

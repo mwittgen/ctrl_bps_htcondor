@@ -22,7 +22,7 @@ import unittest
 
 try:
     import htcondor
-    from lsst.ctrl.bps.wms.htcondor import lssthtc
+    from lsst.ctrl.bps.htcondor import lssthtc
 except ImportError:
     htcondor = None
 
