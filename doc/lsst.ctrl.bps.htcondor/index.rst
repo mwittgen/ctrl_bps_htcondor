@@ -10,13 +10,13 @@ lsst.ctrl.bps.htcondor
 
 .. .. _lsst.ctrl.bps.htcondor-using:
 
-.. Using lsst.ctrl.bps.htcondor
-.. ============================
+Using lsst.ctrl.bps.htcondor
+============================
 
-.. toctree linking to topics related to using the module's APIs.
+.. toctree::
+   :maxdepth: 1
 
-.. .. toctree::
-..    :maxdepth: 1
+   userguide.rst
 
 .. _lsst.ctrl.bps.htcondor-contributing:
 
@@ -31,17 +31,7 @@ You can find Jira issues for this module under the `ctrl_bps_htcondor <https://j
 .. .. toctree::
 ..    :maxdepth: 1
 
-.. .. _lsst.ctrl.bps.htcondor-scripts:
-
-.. Script reference
-.. ================
-
-.. .. TODO: Add an item to this toctree for each script reference topic in the scripts subdirectory.
-
-.. .. toctree::
-..    :maxdepth: 1
-
-.. .. _lsst.ctrl.bps.htcondor-pyapi:
+.. _lsst.ctrl.bps.htcondor-pyapi:
 
 Python API reference
 ====================
