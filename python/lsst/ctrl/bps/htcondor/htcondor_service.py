@@ -117,7 +117,7 @@ class HTCondorService(BaseWmsService):
             The root directory into which all WMS-specific files are written.
 
         Returns
-        ----------
+        -------
         workflow : `lsst.ctrl.bps.wms.htcondor.HTCondorWorkflow`
             HTCondor workflow ready to be run.
         """
@@ -403,7 +403,7 @@ class HTCondorService(BaseWmsService):
             Information to pass through to WMS.
 
         Returns
-        --------
+        -------
         deleted : `bool`
             Whether successful deletion or not.  Currently, if any doubt or any
             individual jobs not deleted, return False.
