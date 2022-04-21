@@ -8,7 +8,17 @@ lsst.ctrl.bps.htcondor
 
 .. Paragraph that describes what this Python module does and links to related modules and frameworks.
 
-.. .. _lsst.ctrl.bps.htcondor-using:
+.. .. _lsst.ctrl.bps.htcondor-changes:
+
+.. Changes
+.. =======
+
+.. .. toctree::
+..   :maxdepth: 1
+
+..   CHANGES.rst
+
+.. _lsst.ctrl.bps.htcondor-using:
 
 Using lsst.ctrl.bps.htcondor
 ============================
