@@ -46,6 +46,10 @@ class TestLsstHtc(unittest.TestCase):
     def testHtcEscapeQuot(self):
         self.assertEqual(lssthtc.htc_escape("&quot;val&quot;"), '"val"')
 
+    def testHtcVersion(self):
+        ver = lssthtc.htc_version()
+        self.assertRegex(ver, r"^\d+\.\d+\.\d+$")
+
 
 if __name__ == "__main__":
     unittest.main()
