@@ -1,4 +1,4 @@
-# This file is part of ctrl_bps.
+# This file is part of ctrl_bps_htcondor.
 #
 # Developed for the LSST Data Management System.
 # This product includes software developed by the LSST Project
@@ -33,10 +33,7 @@ from enum import IntEnum, auto
 from pathlib import Path
 
 import htcondor
-from lsst.utils.timer import time_this
-from packaging import version
-
-from ... import (
+from lsst.ctrl.bps import (
     BaseWmsService,
     BaseWmsWorkflow,
     GenericWorkflow,
@@ -45,7 +42,10 @@ from ... import (
     WmsRunReport,
     WmsStates,
 )
-from ...bps_utils import chdir, create_count_summary
+from lsst.ctrl.bps.bps_utils import chdir, create_count_summary
+from lsst.utils.timer import time_this
+from packaging import version
+
 from .lssthtc import (
     MISSING_ID,
     HTCDag,
@@ -117,7 +117,7 @@ class HTCondorService(BaseWmsService):
             The root directory into which all WMS-specific files are written.
 
         Returns
-        ----------
+        -------
         workflow : `lsst.ctrl.bps.wms.htcondor.HTCondorWorkflow`
             HTCondor workflow ready to be run.
         """
@@ -403,7 +403,7 @@ class HTCondorService(BaseWmsService):
             Information to pass through to WMS.
 
         Returns
-        --------
+        -------
         deleted : `bool`
             Whether successful deletion or not.  Currently, if any doubt or any
             individual jobs not deleted, return False.

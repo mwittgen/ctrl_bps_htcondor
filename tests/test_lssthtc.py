@@ -1,4 +1,4 @@
-# This file is part of ctrl_bps.
+# This file is part of ctrl_bps_htcondor.
 #
 # Developed for the LSST Data Management System.
 # This product includes software developed by the LSST Project
@@ -22,7 +22,7 @@ import unittest
 
 try:
     import htcondor
-    from lsst.ctrl.bps.wms.htcondor import lssthtc
+    from lsst.ctrl.bps.htcondor import lssthtc
 except ImportError:
     htcondor = None
 
@@ -45,6 +45,10 @@ class TestLsstHtc(unittest.TestCase):
 
     def testHtcEscapeQuot(self):
         self.assertEqual(lssthtc.htc_escape("&quot;val&quot;"), '"val"')
+
+    def testHtcVersion(self):
+        ver = lssthtc.htc_version()
+        self.assertRegex(ver, r"^\d+\.\d+\.\d+$")
 
 
 if __name__ == "__main__":

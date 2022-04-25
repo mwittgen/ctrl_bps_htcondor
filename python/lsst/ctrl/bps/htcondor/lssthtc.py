@@ -1,4 +1,4 @@
-# This file is part of ctrl_bps.
+# This file is part of ctrl_bps_htcondor.
 #
 # Developed for the LSST Data Management System.
 # This product includes software developed by the LSST Project
@@ -288,7 +288,7 @@ def htc_backup_files(wms_path, subdir=None, limit=100):
         version 8.8+.
 
     Raises
-    -------
+    ------
     FileNotFoundError
         If the submit directory or the file that needs to be backed up does not
         exist.
@@ -351,7 +351,7 @@ def htc_backup_files(wms_path, subdir=None, limit=100):
 def htc_escape(value):
     """Escape characters in given value based upon HTCondor syntax.
 
-    Parameter
+    Parameters
     ----------
     value : `Any`
         Value that needs to have characters escaped if string.
@@ -430,7 +430,7 @@ def htc_version():
         HTCondor version as easily comparable string.
 
     Raises
-    -------
+    ------
     RuntimeError
         Raised if fail to parse htcondor API string.
     """
@@ -1474,7 +1474,7 @@ def _tweak_log_info(filename, job):
 def htc_check_dagman_output(wms_path):
     """Check the DAGMan output for error messages.
 
-    Parameter
+    Parameters
     ----------
     wms_path : `str`
         Directory containing the DAGman output file.
