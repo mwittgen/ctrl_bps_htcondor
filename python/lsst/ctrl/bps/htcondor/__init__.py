@@ -19,12 +19,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import pkgutil
-
-__path__ = pkgutil.extend_path(__path__, __name__)
-
 try:
     from .htcondor_service import *
     from .lssthtc import *
 except ImportError:
     htcondor = None
+
+from .version import *
