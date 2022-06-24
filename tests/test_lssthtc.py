@@ -20,11 +20,18 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import unittest
 
+from lsst.ctrl.bps.htcondor import __version__ as version
+
 try:
     import htcondor
     from lsst.ctrl.bps.htcondor import lssthtc
 except ImportError:
     htcondor = None
+
+
+class SimpleTestCase(unittest.TestCase):
+    def test_version(self):
+        self.assertIsNotNone(version)
 
 
 @unittest.skipIf(htcondor is None, "Warning: Missing HTCondor API. Skipping")
