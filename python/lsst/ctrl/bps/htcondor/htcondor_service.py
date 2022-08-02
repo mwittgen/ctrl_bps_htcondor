@@ -976,31 +976,49 @@ def _report_from_id(wms_workflow_id, hist, schedds=None):
     message : `str`
         Message to be printed with the summary report.
     """
-    dag_constraint = 'regexp("dagman$", Cmd)'
-    try:
-        cluster_id = int(float(wms_workflow_id))
-    except ValueError:
-        dag_constraint += f' && GlobalJobId == "{wms_workflow_id}"'
-    else:
-        dag_constraint += f" && ClusterId == {cluster_id}"
+    messages = []
 
-    # With the current implementation of the condor_* functions the query will
-    # always return only one match per Scheduler.
-    #
-    # Even in the highly unlikely situation where HTCondor history (which
-    # condor_search queries too) is long enough to have jobs from before the
-    # cluster ids were rolled over (and as a result there is more then one job
-    # with the same cluster id) they will not show up in the results.
-    schedd_dag_info = condor_search(constraint=dag_constraint, hist=hist, schedds=schedds)
+    # Collect information about the job by querying HTCondor schedd and
+    # HTCondor history.
+    schedd_dag_info = _get_info_from_schedd(wms_workflow_id, hist, schedds)
+    if len(schedd_dag_info) == 1:
+
+        # Extract the DAG info without altering the results of the query.
+        schedd_name = next(iter(schedd_dag_info))
+        dag_id = next(iter(schedd_dag_info[schedd_name]))
+        dag_ad = schedd_dag_info[schedd_name][dag_id]
+
+        # If the provided workflow id does not correspond to the one extracted
+        # from the DAGMan log file in the submit directory, rerun the query
+        # with the id found in the file.
+        #
+        # This is to cover the situation in which the user provided the old job
+        # id of a restarted run.
+        try:
+            path_dag_id, path_dag_ad = read_dag_log(dag_ad["Iwd"])
+        except FileNotFoundError as exc:
+            # At the moment missing DAGMan log is pretty much a fatal error.
+            # So empty the DAG info to finish early (see the if statement
+            # below).
+            schedd_dag_info.clean()
+            messages.append(f"Cannot create the report for '{dag_id}': {exc}")
+        else:
+            if path_dag_id != dag_id:
+                schedd_dag_info = _get_info_from_schedd(path_dag_id, hist, schedds)
+                messages.append(
+                    f"WARNING: Found newer workflow executions in same submit directory as id '{dag_id}'. "
+                    f"This normally occurs when a run is restarted. The report shown is for the most "
+                    f"recent status with run id '{path_dag_id}'"
+                )
+
     if len(schedd_dag_info) == 0:
         run_reports = {}
-        message = ""
     elif len(schedd_dag_info) == 1:
         _, dag_info = schedd_dag_info.popitem()
         dag_id, dag_ad = dag_info.popitem()
 
-        # Create a mapping between jobs and their classads. The keys will be
-        # of format 'ClusterId.ProcId'.
+        # Create a mapping between jobs and their classads. The keys will
+        # be of format 'ClusterId.ProcId'.
         job_info = {dag_id: dag_ad}
 
         # Find jobs (nodes) belonging to that DAGMan job.
@@ -1014,16 +1032,60 @@ def _report_from_id(wms_workflow_id, hist, schedds=None):
         # files in the submission directory.
         _, path_jobs, message = _get_info_from_path(dag_ad["Iwd"])
         _update_jobs(job_info, path_jobs)
-
+        if message:
+            messages.append(message)
         run_reports = _create_detailed_report_from_jobs(dag_id, job_info)
     else:
         ids = [ad["GlobalJobId"] for dag_info in schedd_dag_info.values() for ad in dag_info.values()]
-        run_reports = {}
         message = (
             f"More than one job matches id '{wms_workflow_id}', "
             f"their global ids are: {', '.join(ids)}. Rerun with one of the global ids"
         )
+        messages.append(message)
+        run_reports = {}
+
+    message = "\n".join(messages)
     return run_reports, message
+
+
+def _get_info_from_schedd(wms_workflow_id, hist, schedds):
+    """Gather run information from HTCondor.
+
+    Parameters
+    ----------
+    wms_workflow_id : `str`
+        Limit to specific run based on id.
+    hist :
+        Limit history search to this many days.
+    schedds : `dict` [ `str`, `htcondor.Schedd` ], optional
+        HTCondor schedulers which to query for job information. If None
+        (default), all queries will be run against the local scheduler only.
+
+    Returns
+    -------
+    schedd_dag_info : `dict` [`str`, `dict` [`str`, `dict` [`str` Any]]]
+        Information about jobs satisfying the search criteria where for each
+        Scheduler, local HTCondor job ids are mapped to their respective
+        classads.
+    """
+    dag_constraint = 'regexp("dagman$", Cmd)'
+    try:
+        cluster_id = int(float(wms_workflow_id))
+    except ValueError:
+        dag_constraint += f' && GlobalJobId == "{wms_workflow_id}"'
+    else:
+        dag_constraint += f" && ClusterId == {cluster_id}"
+
+    # With the current implementation of the condor_* functions the query
+    # will always return only one match per Scheduler.
+    #
+    # Even in the highly unlikely situation where HTCondor history (which
+    # condor_search queries too) is long enough to have jobs from before
+    # the cluster ids were rolled over (and as a result there is more then
+    # one job with the same cluster id) they will not show up in
+    # the results.
+    schedd_dag_info = condor_search(constraint=dag_constraint, hist=hist, schedds=schedds)
+    return schedd_dag_info
 
 
 def _get_info_from_path(wms_path):
