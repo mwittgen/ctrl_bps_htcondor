@@ -3,7 +3,6 @@ name: build_and_test
 on:
   push:
     branches:
-      - main
     tags:
       - "*"
   pull_request:

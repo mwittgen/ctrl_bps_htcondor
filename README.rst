@@ -14,3 +14,4 @@ It provides a HTCondor plugin for LSST PipelineTask execution framework, based o
 * SPIE paper from 2022: `The Vera C. Rubin Observatory Data Butler and Pipeline Execution System <https://arxiv.org/abs/2206.14941>`_.
 
 PyPI: `lsst-ctrl-bps-htcondor <https://pypi.org/project/lsst-ctrl-bps-htcondor/>`_
+HTCondor plugin for LSST PipelineTask execution framework. 
