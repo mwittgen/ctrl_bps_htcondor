@@ -22,7 +22,7 @@ jobs:
 
       - name: Update pip/wheel infrastructure
         run: |
-          pip install --upgrade setuptools pip wheel
+          pip install --upgrade "setuptools<60" pip wheel
 
       - name: Install dependencies
         run: |
